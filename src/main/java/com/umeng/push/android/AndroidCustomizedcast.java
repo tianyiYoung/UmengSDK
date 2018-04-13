@@ -1,13 +1,5 @@
 package com.umeng.push.android;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.json.JSONObject;
-
 import com.umeng.push.AndroidNotification;
 
 public class AndroidCustomizedcast extends AndroidNotification {
