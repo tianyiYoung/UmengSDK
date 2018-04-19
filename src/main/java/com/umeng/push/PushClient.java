@@ -9,6 +9,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -44,7 +45,7 @@ public class PushClient {
         try {
 	        HttpPost post = new HttpPost(url);
 	        post.setHeader("User-Agent", USER_AGENT);
-	        StringEntity se = new StringEntity(postBody, "UTF-8");
+	        StringEntity se = new StringEntity(postBody, ContentType.create("text/plain", "UTF-8"));
 	        post.setEntity(se);
 	        // Send the post request and get the response
 	        response = httpClient.execute(post);
