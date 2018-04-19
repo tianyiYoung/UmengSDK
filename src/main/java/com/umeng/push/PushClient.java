@@ -2,6 +2,7 @@ package com.umeng.push;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -42,6 +43,7 @@ public class PushClient {
         String sign = DigestUtils.md5Hex(("POST" + url + postBody + msg.getAppMasterSecret()).getBytes("utf8"));
         url = url + "?sign=" + sign;
         CloseableHttpResponse response = null;
+        InputStream instream = null;
         try {
 	        HttpPost post = new HttpPost(url);
 	        post.setHeader("User-Agent", USER_AGENT);
@@ -51,10 +53,10 @@ public class PushClient {
 	        response = httpClient.execute(post);
 	        int status = response.getStatusLine().getStatusCode();
 	        if(status != HttpStatus.SC_OK) {
-	        	post.abort();
 	        	throw new RuntimeException("HttpClient,error status code :" + status);
 	        }
-	        BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+	        instream = response.getEntity().getContent();
+	        BufferedReader rd = new BufferedReader(new InputStreamReader(instream));
 	        StringBuffer result = new StringBuffer();
 	        String line = "";
 	        while ((line = rd.readLine()) != null) {
@@ -69,13 +71,20 @@ public class PushClient {
                     e.printStackTrace();
                 }
             }
-            if (httpClient != null) {
+        	if (instream != null) {
+        		try {
+        			instream.close();
+        		}catch (IOException e) {
+                    e.printStackTrace();
+                }
+        	}
+            /*if (httpClient != null) {
                 try {
                     httpClient.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
         }
     }
 
