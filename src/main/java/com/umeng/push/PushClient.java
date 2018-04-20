@@ -13,15 +13,21 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.json.JSONObject;
 
 public class PushClient {
 	
 	private static final CloseableHttpClient httpClient;
     static {
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(5000).setSocketTimeout(5000).build();
-        httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+    	PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+    	connManager.setMaxTotal(200);
+    	connManager.setDefaultMaxPerRoute(200);
+        RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(5000)
+        		.setConnectTimeout(5000).setSocketTimeout(5000).setStaleConnectionCheckEnabled(true).build();
+        httpClient = HttpClients.custom().setConnectionManager(connManager)
+        		.setDefaultRequestConfig(config).build();
     }
 	// The user agent
 	protected final String USER_AGENT = "Mozilla/5.0";
@@ -78,13 +84,6 @@ public class PushClient {
                     e.printStackTrace();
                 }
         	}
-            /*if (httpClient != null) {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }*/
         }
     }
 
