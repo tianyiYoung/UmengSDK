@@ -78,6 +78,9 @@ public class PushClient {
                     e.printStackTrace();
                 }
         	}
+        	if(post != null) {
+        		post.releaseConnection();
+        	}
         }
     }
 
