@@ -50,9 +50,10 @@ public class PushClient {
         url = url + "?sign=" + sign;
         CloseableHttpResponse response = null;
         InputStream instream = null;
+        HttpPost post = new HttpPost(url);
+        post.addHeader("Connection", "Keep-Alive");
+        post.setHeader("User-Agent", USER_AGENT);
         try {
-	        HttpPost post = new HttpPost(url);
-	        post.setHeader("User-Agent", USER_AGENT);
 	        StringEntity se = new StringEntity(postBody, ContentType.create("text/plain", "UTF-8"));
 	        post.setEntity(se);
 	        // Send the post request and get the response
@@ -70,13 +71,6 @@ public class PushClient {
 	        }
 	        return result.toString();
         }finally {
-        	if (response != null) {
-                try {
-                    response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         	if (instream != null) {
         		try {
         			instream.close();
